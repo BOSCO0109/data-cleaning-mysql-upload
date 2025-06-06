@@ -45,3 +45,34 @@ engine = create_engine('mysql+mysqlconnector://root:###@###@localhost/dummy_1') 
 D.to_sql('Rexx',con=engine,if_exists='replace',index=False)         #and upload the clean file to sql
 
 print('sucessfuly update')
+
+#################################################################
+
+#Write a function to check if a number is prime
+import pandas as ps
+import plotly.express as ex
+import ast
+from sqlalchemy import create_engine as cg 
+import seaborn as se
+import matplotlib.pyplot as py
+import numpy as nm
+
+A = ps.read_csv(r'C:\Bosco\Study\Don SQL\project.csv')
+
+A['OrderID'] = A['OrderID'].astype(int)
+A['Date'] = ps.to_datetime(A['Date'])
+A['Customer'] = A['Customer'].astype(str)
+A['Product'] = A['Product'].astype(str)
+A['Quantity'] = A['Quantity'].astype(int)
+A['Price'] = A['Price'].astype(float)
+A['Region'] = A['Region'].astype(str)
+A['TotalPrice'] = A['Quantity'] * A['Price']
+
+engine = cg('mysql+mysqlconnector://root:<password>@localhost/dummy_1')
+
+query = '''
+select Customer, count(Customer) from project group by Customer order by Customer desc
+'''
+df = ps.read_sql(query,con=engine)
+
+print(df)
