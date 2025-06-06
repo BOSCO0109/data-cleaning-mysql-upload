@@ -40,7 +40,7 @@ normal = normal.applymap(C)             #applying it to normal variable
 
 D = ps.concat([A['AA'],normal],axis=1)  
 
-engine = create_engine('mysql+mysqlconnector://root:###@###@localhost/dummy_1')  #hide the password using '####' for privacy
+engine = create_engine('mysql+mysqlconnector://root<password>localhost/dummy_1')  #hide the password using '####' for privacy
 
 D.to_sql('Rexx',con=engine,if_exists='replace',index=False)         #and upload the clean file to sql
 
@@ -56,6 +56,37 @@ from sqlalchemy import create_engine as cg
 import seaborn as se
 import matplotlib.pyplot as py
 import numpy as nm
+
+A = ps.read_csv(r'C:\Bosco\Study\Don SQL\project.csv')  #read the csv from the path
+
+A['OrderID'] = A['OrderID'].astype(int)                  #scling each columns
+A['Date'] = ps.to_datetime(A['Date'])                    #scling each columns
+A['Customer'] = A['Customer'].astype(str)                #scling each columns
+A['Product'] = A['Product'].astype(str)                    #scling each columns
+A['Quantity'] = A['Quantity'].astype(int)                #scling each columns
+A['Price'] = A['Price'].astype(float)                    #scling each columns
+A['Region'] = A['Region'].astype(str)                    #scling each columns
+A['TotalPrice'] = A['Quantity'] * A['Price']               #scling each columns
+
+engine = cg('mysql+mysqlconnector://root:<password>@localhost/dummy_1')         
+
+query = '''
+select Customer, count(Customer) from project group by Customer order by Customer desc
+'''
+df = ps.read_sql(query,con=engine)
+
+print(df)
+
+################################################################
+
+#Write a function to check if a number is prime
+import pandas as ps
+import plotly.express as ex
+from sqlalchemy import create_engine as cg 
+import seaborn as se
+import matplotlib.pyplot as py
+import numpy as nm
+from plotly.subplots import make_subplots as ms
 
 A = ps.read_csv(r'C:\Bosco\Study\Don SQL\project.csv')
 
@@ -74,5 +105,11 @@ query = '''
 select Customer, count(Customer) from project group by Customer order by Customer desc
 '''
 df = ps.read_sql(query,con=engine)
+B = ex.bar(A,x=A['TotalPrice'],y=A['Region'])
+C = ex.line(A,x=A['Date'],y=A['Quantity'])
+D = ex.pie(A,names=A['Region'],values=A['Quantity'])
+B.show()
+C.show()
+D.show()
 
-print(df)
+print('super ')
